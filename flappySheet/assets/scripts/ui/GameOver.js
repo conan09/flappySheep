@@ -18,7 +18,10 @@ cc.Class({
 
     RestartGame : function(){
         this.node.active = false;
-        // cc.director.loadScene("Game");
-        cc.game.restart();
+        if(cc.sys.isMobile){
+            cc.game.restart();
+        }else if(cc.sys.isBrowser){
+            document.location.reload();
+        }
     },
 });

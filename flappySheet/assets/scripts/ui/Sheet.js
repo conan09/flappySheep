@@ -50,17 +50,23 @@ cc.Class({
         this.StartRun();
     },
 
+    onDestroy(){
+        this.node.off(cc.Node.EventType.TOUCH_END,)
+    },
+
     RegisterInput : function(){
         this.node.on(cc.Node.EventType.TOUCH_END, (event)=>{
             this.Jump(); 
         })
-        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, (event)=>{
-            switch(event.keyCode){
-                case cc.macro.KEY.pageup:
-                    this.Jump();
-                    break;
-            }
-        }, this);
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.OnKeyDown, this);
+    },
+
+    OnKeyDown : function(event){
+        switch(event.keyCode){
+            case cc.macro.KEY.up:
+                this.Jump();
+                break;
+        }
     },
 
     StartRun : function(){
@@ -68,6 +74,10 @@ cc.Class({
     },
 
     start () {
+    },
+
+    GetSheetPos : function(){
+        return this.node.position;
     },
 
     update (dt) {
@@ -100,4 +110,34 @@ cc.Class({
         this.currentSpeed = this.jumpSpeed;
         this.node.getComponent(cc.Animation).play("Jump");
     },
+        /**
+     * 当碰撞产生的时候调用
+     * @param  {Collider} other 产生碰撞的另一个碰撞组件
+     * @param  {Collider} self  产生碰撞的自身的碰撞组件
+     */
+    onCollisionEnter: function (other, self) {
+        console.log('on collision enter');
+
+        if(other.node.group == "Obstacle"){
+            Global.GameManager.OverGame();
+        }else if(other.node.group == "NextPipe"){
+            Global.GameManager.GainScore();
+        }
+    },
+    /**
+     * 当碰撞产生后，碰撞结束前的情况下，每次计算碰撞结果后调用
+     * @param  {Collider} other 产生碰撞的另一个碰撞组件
+     * @param  {Collider} self  产生碰撞的自身的碰撞组件
+     */
+    onCollisionStay: function (other, self) {
+        console.log('on collision stay');
+    },
+    /**
+     * 当碰撞结束后调用
+     * @param  {Collider} other 产生碰撞的另一个碰撞组件
+     * @param  {Collider} self  产生碰撞的自身的碰撞组件
+     */
+    onCollisionExit: function (other, self) {
+        console.log('on collision exit');
+    }
 });

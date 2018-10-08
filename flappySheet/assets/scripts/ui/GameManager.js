@@ -1,41 +1,42 @@
-// Learn cc.Class:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/class.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/class.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
+/**
+ * 主逻辑
+ */
+require("../Common/Common");
+// require("./Global");
+// let Sheet = require("./Sheet");
 
 cc.Class({
     extends: cc.Component,
 
     properties: {
-        // foo: {
-        //     // ATTRIBUTES:
-        //     default: null,        // The default value will be used only when the component attaching
-        //                           // to a node for the first time
-        //     type: cc.SpriteFrame, // optional, default is typeof default
-        //     serializable: true,   // optional, default is true
-        // },
-        // bar: {
-        //     get () {
-        //         return this._bar;
-        //     },
-        //     set (value) {
-        //         this._bar = value;
-        //     }
-        // },
+        lbl_score : cc.Label,
+        sheet : cc.Sprite,
+        pipeLayer : cc.Node,
+        sky : cc.Sprite,
+        ground : cc.Sprite,
+        gameover : cc.Node,
     },
 
-    // LIFE-CYCLE CALLBACKS:
-
-    // onLoad () {},
-
-    start () {
-
+    ctor() {
+        this.score = 0;
     },
 
-    // update (dt) {},
+    onLoad () {
+        var manager = cc.director.getCollisionManager();
+        manager.enabled = true;
+        manager.enabledDebugDraw = true;
+
+        Global.GameManager = this;
+    },
+
+    GainScore : function(){
+        this.score += 1
+        this.lbl_score.string = this.score;
+    },
+
+    OverGame : function(){
+        cc.log("Game Over");
+        // this.sheet.spriteFrame = new cc.SpriteFrame("sheep_touch_01");
+        this.gameover.getComponent("GameOver").Show(this.score);
+    },
 });
